@@ -2,6 +2,7 @@ import time
 import hashlib
 
 from src.block import Block
+from src.transaction import Transaction
 
 
 class Blockchain:
@@ -17,6 +18,7 @@ class Blockchain:
         """
         self.chain = []
         self.difficulty = difficulty
+        self.current_transactions = []        # Lista de Transações que serão validadas no bloco.
         self.create_block(previous_hash='0')  # Bloco Gênese
 
 
@@ -39,16 +41,30 @@ class Blockchain:
         nonce = 0
 
         # Gerando PoW
-        hash = self.proof_of_work(index, previous_hash, timestamp, data, nonce)
+        hash = self.proof_of_work(index, previous_hash, timestamp, self.current_transactions, nonce)
 
         # Criando Bloco e Adicionando a Rede
-        block = Block(index, previous_hash, timestamp, data, hash, nonce)
+        block = Block(index, previous_hash, timestamp, self.current_transactions, hash, nonce)
         self.chain.append(block)
+
+        self.current_transactions = [] # Resetando Transações
     
         return block
     
 
-    def proof_of_work(self, index, previous_hash, timestamp, data, nonce):
+    def add_transaction(self, sender, recipient, amount):
+        """
+        Adiciona uma nova transação à lista de transações pendentes.
+
+        :param sender: O endereço do remetente.
+        :param recipient: O endereço do destinatário.
+        :param amount: O valor da transação.
+        """
+        transaction = Transaction(sender, recipient, amount)
+        self.current_transactions.append(transaction)
+    
+
+    def proof_of_work(self, index, previous_hash, timestamp, transactions, nonce):
         """
         Realiza o processo de proof of work para encontrar um hash válido.
 
@@ -63,16 +79,16 @@ class Blockchain:
         :param nonce: O número utilizado para a mineração.
         :return: O hash que atende à condição de dificuldade.
         """
-        hash = self.calculate_hash(index, previous_hash, timestamp, data, nonce)
+        hash = self.calculate_hash(index, previous_hash, timestamp, transactions, nonce)
         target = '0' * self.difficulty
         while not hash.startswith(target):
             nonce += 1
-            hash = self.calculate_hash(index, previous_hash, timestamp, data, nonce)
+            hash = self.calculate_hash(index, previous_hash, timestamp, transactions, nonce)
         return hash
 
 
     @staticmethod
-    def calculate_hash(index, previous_hash, timestamp, data, nonce):
+    def calculate_hash(index, previous_hash, timestamp, transactions, nonce):
         """
         Calcula o hash para um bloco.
 
@@ -83,5 +99,5 @@ class Blockchain:
         :param nonce: O número utilizado para a mineração.
         :return: O hash calculado do bloco.
         """
-        value = f"{index}{previous_hash}{timestamp}{data}{nonce}"
+        value = f"{index}{previous_hash}{timestamp}{transactions}{nonce}"
         return hashlib.sha256(value.encode()).hexdigest()
