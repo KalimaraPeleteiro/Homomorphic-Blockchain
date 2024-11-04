@@ -1,10 +1,11 @@
 from src.blockchain import Blockchain
+from random import randint
 
 if __name__ == "__main__":
     blockchain = Blockchain()
 
-    blockchain.create_block(data="First block data")
-    blockchain.create_block(data="Second block data")
+    for i in range(100):
+        blockchain.create_block(data=f"{randint(1, 10000)}")
     
     for block in blockchain.chain:
         print(f"Block {block.index}:")
