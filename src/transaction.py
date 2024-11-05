@@ -18,3 +18,22 @@ class Transaction:
         self.recipient = recipient
         self.amount = amount
         self.timestamp = timestamp or time.time()
+    
+
+    def is_valid(self, wallets):
+        """
+        Valida a transação verificando se o remetente tem saldo suficiente.
+        
+        :param wallets: O dicionário de carteiras com saldos.
+        :return: True se a transação for válida, False caso contrário.
+        """
+        if self.sender not in wallets:
+            print(f"Sender {self.sender} not found.")
+            return False
+        
+        sender_balance = wallets[self.sender]
+        if sender_balance >= self.amount:
+            return True
+        else:
+            print(f"Fundos Insuficiente: Sender {self.sender} possui {sender_balance}, mas precisa {self.amount}.")
+            return False

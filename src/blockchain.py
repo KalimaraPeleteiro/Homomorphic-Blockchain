@@ -1,8 +1,10 @@
 import time
 import hashlib
+import uuid
 
 from src.block import Block
 from src.transaction import Transaction
+from random import choice, randint
 
 
 class Blockchain:
@@ -19,7 +21,20 @@ class Blockchain:
         self.chain = []
         self.difficulty = difficulty
         self.current_transactions = []        # Lista de Transações que serão validadas no bloco.
+        self.wallets = {}                    # Dicionário de Carteiras
         self.create_block(previous_hash='0')  # Bloco Gênese
+    
+
+    def create_wallet(self, initial_balance):
+        """
+        Cria uma nova carteira com UUID único e saldo inicial de 0.
+
+        :param initial_balance: Saldo da carteira.
+        :return: UUID da nova carteira.
+        """
+        wallet_id = str(uuid.uuid4())
+        self.wallets[wallet_id] = initial_balance
+        return wallet_id
 
 
     def create_block(self, data="", previous_hash=""):
@@ -41,7 +56,9 @@ class Blockchain:
         nonce = 0
 
         # Gerando PoW
-        hash = self.proof_of_work(index, previous_hash, timestamp, self.current_transactions, nonce)
+        start_time = time.time()
+        hash, hashes_attempted = self.proof_of_work(index, previous_hash, timestamp, self.current_transactions, nonce)
+        mining_time = time.time() - start_time
 
         # Criando Bloco e Adicionando a Rede
         block = Block(index, previous_hash, timestamp, self.current_transactions, hash, nonce)
@@ -49,7 +66,7 @@ class Blockchain:
 
         self.current_transactions = [] # Resetando Transações
     
-        return block
+        return block, hashes_attempted, mining_time
     
 
     def add_transaction(self, sender, recipient, amount):
@@ -81,10 +98,38 @@ class Blockchain:
         """
         hash = self.calculate_hash(index, previous_hash, timestamp, transactions, nonce)
         target = '0' * self.difficulty
+        hashes_attempted = 0
         while not hash.startswith(target):
             nonce += 1
             hash = self.calculate_hash(index, previous_hash, timestamp, transactions, nonce)
-        return hash
+            hashes_attempted += 1
+        return hash, hashes_attempted
+    
+
+    def create_multiple_blocks(self, num_blocks, num_transactions_per_block):
+        """
+        Cria múltiplos blocos, cada um com um número especificado de transações.
+        
+        :param num_blocks: O número de blocos a serem criados.
+        :param num_transactions_per_block: O número de transações em cada bloco.
+        """
+        for _ in range(num_blocks):
+            self.create_block_with_transactions(num_transactions_per_block)
+
+
+    def create_block_with_transactions(self, num_transactions):
+        """
+        Cria um bloco com um número especificado de transações.
+        
+        :param num_transactions: O número de transações a serem adicionadas ao bloco.
+        """
+        for _ in range(num_transactions):
+            sender = choice(list(self.wallets.keys()))  # Escolhe aleatoriamente um remetente
+            recipient = choice(list(self.wallets.keys()))  # Escolhe aleatoriamente um destinatário
+            amount = randint(1, 100)
+            self.add_transaction(sender, recipient, amount)
+
+        self.create_block()  # Cria o bloco após adicionar as transações
 
 
     @staticmethod
