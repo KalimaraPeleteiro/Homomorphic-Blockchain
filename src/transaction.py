@@ -37,3 +37,17 @@ class Transaction:
         else:
             print(f"Fundos Insuficiente: Sender {self.sender} possui {sender_balance}, mas precisa {self.amount}.")
             return False
+    
+
+    def to_dict(self):
+        """
+        Converte a transação para um dicionário serializável.
+
+        :return: Um dicionário representando a transação.
+        """
+        return {
+            'sender': self.sender,
+            'recipient': self.recipient,
+            'amount': self.amount,
+            'timestamp': self.timestamp
+        }

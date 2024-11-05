@@ -1,8 +1,12 @@
 [FEITO!] PoW (Proof of Work)
-    PoW Adaptativo, baseado, em métricas como HashRate
 [FEITO!] Transactions
-    Adicionar Endereços
-    Garantir que Endereços possuam saldos, e que as transações chequem tais saldos.
-    Adicionar UUID único como endereço.
-Coletar métricas
-    Definir Métricas para Coleção
+    [FEITO!] Adicionar Endereços
+    [FEITO!] Garantir que Endereços possuam saldos, e que as transações chequem tais saldos.
+    [FEITO!] Adicionar UUID único como endereço.
+[FEITO!] Coletar métricas
+    [FEITO!] Definir Métricas para Coleção
+    [FEITO!] Adicionar Outras Métricas
+        [FEITO!] Transações por Segundo
+        Tamanho Médio do Bloco (em Bytes)
+Adicionar Homomorfia
+Finalizar Testes com Homomorfia
