@@ -1,0 +1,8 @@
+Análise
+
+Tempo Médio de Criação de Bloco
+- Aumento de 75.2% até 237.6%. Média de aumento de 145.5%
+
+TPS
+- Redução média de 99.7%.
+

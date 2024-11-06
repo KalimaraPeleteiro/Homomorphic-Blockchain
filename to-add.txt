@@ -8,5 +8,5 @@
     [FEITO!] Adicionar Outras Métricas
         [FEITO!] Transações por Segundo
         [FEITO!] Tamanho Médio do Bloco (em Bytes)
-Adicionar Homomorfia
-Finalizar Testes com Homomorfia
+[FEITO!] Adicionar Homomorfia
+[FEITO!] Finalizar Testes com Homomorfia
